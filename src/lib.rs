@@ -153,7 +153,7 @@ impl FdPassingExt for RawFd {
         let mut msg = unsafe { msg.assume_init() };
 
         unsafe {
-            let rv = libc::recvmsg(*self, &mut msg, 0);
+            let rv = libc::recvmsg(*self, &mut msg, libc::MSG_PEEK);
             match rv {
                 0 => Err(Error::new(ErrorKind::UnexpectedEof, "0 bytes read")),
                 rv if rv < 0 => Err(Error::last_os_error()),
