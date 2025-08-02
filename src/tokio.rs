@@ -1,5 +1,4 @@
-//! Support for tokio 0.2 UnixStream.
-//! It does a really bad `mem::transmute`, which is *NOT SAFE*
+//! Support for UnixStream in tokio v1
 
 use std::future::Future;
 use std::io::{Error, ErrorKind};

@@ -1,9 +1,8 @@
 //! `passfd` allows passing file descriptors between unrelated processes
-//! using Unix sockets.
+//! using Unix sockets. Please note that these features rely on internal
+//! representation of UnixStream and are unsafe.
 //!
-//! Both tokio 0.1 and 0.2 are supported with `tokio_01` and `tokio_02`
-//! features. Please note that these features rely on internal representation
-//! of UnixStream and are unsafe.
+//! Tokio is supported with the `async` feature enabled.
 //!
 //! # Example usage
 //! ## Process 1 (sender)
@@ -110,12 +109,7 @@ impl FdPassingExt for RawFd {
                 (*hdr).cmsg_len = libc::CMSG_LEN(mem::size_of::<c_int>() as u32) as _;
             }
             let hdr = hdr.assume_init();
-            // https://github.com/rust-lang/rust-clippy/issues/2881
-            #[allow(clippy::cast_ptr_alignment)]
             std::ptr::write_unaligned(libc::CMSG_FIRSTHDR(&msg), hdr);
-
-            // https://github.com/rust-lang/rust-clippy/issues/2881
-            #[allow(clippy::cast_ptr_alignment)]
             std::ptr::write_unaligned(
                 libc::CMSG_DATA(u.buf.as_mut_ptr() as *const _) as *mut c_int,
                 fd,
@@ -171,8 +165,6 @@ impl FdPassingExt for RawFd {
                     {
                         return Err(Error::new(ErrorKind::InvalidData, "bad control msg"));
                     }
-                    // https://github.com/rust-lang/rust-clippy/issues/2881
-                    #[allow(clippy::cast_ptr_alignment)]
                     let fd = std::ptr::read_unaligned(libc::CMSG_DATA(hdr) as *mut c_int);
                     if libc::fcntl(fd, libc::F_SETFD, libc::FD_CLOEXEC) < 0 {
                         return Err(Error::last_os_error());

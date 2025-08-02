@@ -1,8 +1,12 @@
 [package]
 name = "passfd"
 version = "0.2.0"
-authors = ["Alexander Polakov <plhk@sdf.org>"]
-edition = "2018"
+authors = [
+	"Alexander Polakov <plhk@sdf.org>",
+	"Matthew Martin <phy1729@gmail.com>",
+	"Markus Wanner <markus@bluegap.ch>",
+]
+edition = "2024"
 description = "File descriptor passing"
 license = "MIT"
 documentation = "https://docs.rs/passfd/"
